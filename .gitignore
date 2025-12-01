@@ -1,0 +1,6 @@
+# CodeIgniter writable folders
+ci/writable/cache/
+ci/writable/debugbar/
+ci/writable/logs/
+ci/writable/session/
+
