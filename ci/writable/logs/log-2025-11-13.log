@@ -1,0 +1,56 @@
+CRITICAL - 2025-11-13 10:54:18 --> ErrorException: Undefined property: stdClass::$msg_date_envoi
+[Method: GET, Route: message/faire_suivi/A3S8KE2WT1Q3TMY4GPYW]
+in APPPATH/Views/message_suivi.php on line 10.
+ 1 APPPATH/Views/message_suivi.php(10): CodeIgniter\Debug\Exceptions->errorHandler()
+ 2 SYSTEMPATH/View/View.php(234): include('/home/2025DIFAL3/e22507733/public_html/V1/ci/app/Views/message_suivi.php')
+ 3 SYSTEMPATH/View/View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH/Common.php(1171): CodeIgniter\View\View->render()
+ 5 APPPATH/Controllers/Message.php(39): view()
+ 6 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\Message->faire_suivi()
+ 7 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb()
+CRITICAL - 2025-11-13 10:54:45 --> ErrorException: Undefined property: stdClass::$msg_mail
+[Method: GET, Route: message/faire_suivi/A3S8KE2WT1Q3TMY4GPYW]
+in APPPATH/Views/message_suivi.php on line 11.
+ 1 APPPATH/Views/message_suivi.php(11): CodeIgniter\Debug\Exceptions->errorHandler()
+ 2 SYSTEMPATH/View/View.php(234): include('/home/2025DIFAL3/e22507733/public_html/V1/ci/app/Views/message_suivi.php')
+ 3 SYSTEMPATH/View/View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH/Common.php(1171): CodeIgniter\View\View->render()
+ 5 APPPATH/Controllers/Message.php(39): view()
+ 6 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\Message->faire_suivi()
+ 7 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb()
+CRITICAL - 2025-11-13 10:54:49 --> ErrorException: Undefined property: stdClass::$msg_mail
+[Method: GET, Route: message/faire_suivi/A3S8KE2WT1Q3TMY4GPYW]
+in APPPATH/Views/message_suivi.php on line 11.
+ 1 APPPATH/Views/message_suivi.php(11): CodeIgniter\Debug\Exceptions->errorHandler()
+ 2 SYSTEMPATH/View/View.php(234): include('/home/2025DIFAL3/e22507733/public_html/V1/ci/app/Views/message_suivi.php')
+ 3 SYSTEMPATH/View/View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH/Common.php(1171): CodeIgniter\View\View->render()
+ 5 APPPATH/Controllers/Message.php(39): view()
+ 6 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\Message->faire_suivi()
+ 7 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb()
+CRITICAL - 2025-11-13 10:55:01 --> ErrorException: Undefined property: stdClass::$msg_sujet
+[Method: GET, Route: message/faire_suivi/A3S8KE2WT1Q3TMY4GPYW]
+in APPPATH/Views/message_suivi.php on line 12.
+ 1 APPPATH/Views/message_suivi.php(12): CodeIgniter\Debug\Exceptions->errorHandler()
+ 2 SYSTEMPATH/View/View.php(234): include('/home/2025DIFAL3/e22507733/public_html/V1/ci/app/Views/message_suivi.php')
+ 3 SYSTEMPATH/View/View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH/Common.php(1171): CodeIgniter\View\View->render()
+ 5 APPPATH/Controllers/Message.php(39): view()
+ 6 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\Message->faire_suivi()
+ 7 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb()
