@@ -125,6 +125,8 @@ cd bus-reservation-app
 git checkout V2
 
 # 3. Importer la base de données
+# → Ce fichier se trouve sur la branche main
+# → git checkout main, récupérer e22507733_db1.sql, puis revenir sur V2
 # → Ouvrir phpMyAdmin, créer une base, importer database/e22507733_db1.sql
 
 # 4. Configurer la connexion
