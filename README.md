@@ -182,7 +182,7 @@ git checkout V2
 
 > Ce projet a été développé dans un cadre académique avec des délais contraints, en parallèle d'autres cours et projets. Certains aspects comme le design n'ont pas pu être finalisés faute de temps.
 
-- Interface utilisateur perfectible - le design frontend n'a pas pu être entièrement retravaillé (template Bootstrap utilisé tel quel)
+- Interface utilisateur perfectible - le design frontend n'a pas pu être entièrement optimisé faute de temps
 - Authentification SHA-256 fonctionnelle mais améliorable (bcrypt / Argon2 en production)
 - Absence d'API REST pour une séparation claire frontend / backend
 - Déploiement non containerisé (Docker envisageable)
