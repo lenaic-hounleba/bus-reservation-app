@@ -192,7 +192,7 @@ git checkout V2
 ## 👨‍💻 Auteur
 
 **Lenaïc Love HOUNLEBA**  
-Diplômé en L3 Informatique - UBO Brest  
+L3 Informatique - UBO Brest (diplôme en cours d'obtention, 2025-2026)  
 CEO & Développeur Full Stack - [ComeUp](https://comeup.com/fr/@lenaic-1)
 
 🔗 GitHub : [github.com/lenaic-hounleba](https://github.com/lenaic-hounleba)  
