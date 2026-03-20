@@ -20,7 +20,7 @@ Le système s'articule autour de **trois rôles distincts** :
 
 ## 📸 Aperçu de l'application
 
-### Page d'accueil — Actualités
+### Page d'accueil avec les dernières actualités
 ![Accueil](https://raw.githubusercontent.com/lenaic-hounleba/bus-reservation-app/V2/docs/screenshots/accueil_resaweb.png)
 
 ### Liste des véhicules (Admin)
