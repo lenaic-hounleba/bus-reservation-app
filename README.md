@@ -180,8 +180,10 @@ git checkout V2
 
 ## ⚠️ Limites et améliorations possibles
 
+> Ce projet a été développé dans un cadre académique avec des délais contraints, en parallèle d'autres cours et projets. Certains aspects comme le design n'ont pas pu être finalisés faute de temps.
+
+- Interface utilisateur perfectible - le design frontend n'a pas pu être entièrement retravaillé (template Bootstrap utilisé tel quel)
 - Authentification SHA-256 fonctionnelle mais améliorable (bcrypt / Argon2 en production)
-- Interface utilisateur perfectible (UX/UI)
 - Absence d'API REST pour une séparation claire frontend / backend
 - Déploiement non containerisé (Docker envisageable)
 
@@ -189,6 +191,7 @@ git checkout V2
 
 ## 🔭 Perspectives d'évolution
 
+- Refonte complète du design et de l'expérience utilisateur (UX/UI personnalisée)
 - Mise en place d'une API REST
 - Migration vers Laravel ou Symfony
 - Intégration d'un système de notifications (email, push)
