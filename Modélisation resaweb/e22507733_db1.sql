@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : jeu. 13 nov. 2025 à 00:44
+-- Généré le : jeu. 04 déc. 2025 à 14:00
 -- Version du serveur : 10.11.11-MariaDB-0+deb12u1-log
 -- Version de PHP : 8.2.29
 
@@ -25,6 +25,45 @@ DELIMITER $$
 --
 -- Procédures
 --
+CREATE DEFINER=`e22507733sql`@`%` PROCEDURE `ajouter_participant` (IN `p_cpt_id` INT, IN `p_res_id` INT, IN `p_role` VARCHAR(20), OUT `p_code` INT)   BEGIN
+    DECLARE v_jauge INT;
+    DECLARE v_places_occupees INT;
+
+    /* 1) Vérifier si la réservation existe */
+    IF NOT EXISTS (
+        SELECT 1 
+        FROM t_reservation_res 
+        WHERE res_id = p_res_id
+    ) THEN
+        SET p_code = 2; -- réservation inexistante
+    ELSE
+        /* 2) Récupérer la jauge max de la ressource de cette réservation */
+        SELECT t_ressource_rsc.rsc_jauge
+        INTO v_jauge
+        FROM t_reservation_res
+        JOIN t_ressource_rsc 
+          ON t_reservation_res.rsc_id = t_ressource_rsc.rsc_id
+        WHERE t_reservation_res.res_id = p_res_id;
+
+        /* 3) Compter le nombre d'inscriptions existantes pour cette réservation */
+        SELECT COUNT(*)
+        INTO v_places_occupees
+        FROM t_inscription_isc
+        WHERE res_id = p_res_id;
+
+        /* 4) Vérifier si la jauge est atteinte ou dépassée */
+        IF v_places_occupees >= v_jauge THEN
+            SET p_code = 1; -- jauge pleine
+        ELSE
+            /* 5) Insérer l'inscription */
+            INSERT INTO t_inscription_isc (cpt_id, res_id, isc_date, isc_role)
+            VALUES (p_cpt_id, p_res_id, NOW(), p_role);
+
+            SET p_code = 0; -- OK
+        END IF;
+    END IF;
+END$$
+
 CREATE DEFINER=`e22507733sql`@`%` PROCEDURE `gestion_cr_reunion` (IN `p_reu_id` INT)   BEGIN
     DECLARE nb_participants INT;
     DECLARE titre_doc VARCHAR(255);
@@ -75,6 +114,18 @@ CREATE DEFINER=`e22507733sql`@`%` FUNCTION `nbpersonne` (`p_ren_id` INT) RETURNS
     RETURN nb;
 END$$
 
+CREATE DEFINER=`e22507733sql`@`%` FUNCTION `nb_reservations_jour` (`p_rsc_id` INT, `p_date` DATE) RETURNS INT(11) DETERMINISTIC BEGIN
+    DECLARE nb INT DEFAULT 0;
+
+    SELECT COUNT(*)
+    INTO nb
+    FROM t_reservation_res
+    WHERE t_reservation_res.rsc_id = p_rsc_id
+      AND DATE(t_reservation_res.res_date_debut) = p_date;
+
+    RETURN nb;
+END$$
+
 DELIMITER ;
 
 -- --------------------------------------------------------
@@ -97,11 +148,11 @@ CREATE TABLE `t_actualite_act` (
 --
 
 INSERT INTO `t_actualite_act` (`act_id`, `act_titre`, `act_image`, `act_date_ajout`, `act_contenu`, `cpt_id`) VALUES
-(1, 'Ajout_nouveau_minibus', 'minibus_new.jpg', '2025-10-07 09:57:09.0', 'Un nouveau minibus 12 places a ete ajoute a la flotte.', 12),
-(2, 'Annulation_sortie_Marseille', 'annul.jpg', '2025-10-07 09:57:09.0', 'La sortie a Marseille est annulee pour raisons meteo.', 12),
-(4, 'Nouvelles_regles_reservation', 'rules.jpg', '2025-10-07 09:57:09.0', 'Publication des nouvelles regles de reservation.', 14),
-(6, 'Assemblee_generale', 'ag.jpg', '2025-10-07 09:57:09.0', 'L assemblee generale aura lieu le 15 decembre.', 14),
-(7, 'Hello actualité ', 'zdef.jpg', '2025-11-02 00:59:00.0', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 16);
+(1, 'Ajout d\'un nouveau minibus', 'minibus_new.jpg', '2025-12-07 09:57:09.0', 'Un nouveau minibus 12 places a ete ajoute a la flotte.', 12),
+(2, 'Annulation sortie à Marseille', 'annul.jpg', '2025-10-07 09:57:09.0', 'La sortie a Marseille est annulee pour raisons meteo.', 12),
+(4, 'Nouvelles regles de reservation', 'rules.jpg', '2025-10-07 09:57:09.0', 'Publication des nouvelles regles de reservation.', 14),
+(6, 'Assemblée generale de Brest', 'ag.jpg', '2025-10-07 09:57:09.0', 'L assemblee generale aura lieu le 15 decembre.', 14),
+(10, 'Annulation sortie Paris', 'paris.jpg', '2025-11-20 15:58:57.0', 'La sortie a Paris est annulee pour raisons meteo.', 23);
 
 -- --------------------------------------------------------
 
@@ -123,25 +174,25 @@ CREATE TABLE `t_compte_cpt` (
 INSERT INTO `t_compte_cpt` (`cpt_id`, `cpt_pseudo`, `cpt_mdp`, `cpt_etat`) VALUES
 (1, 'Invite1', '4b3b24430adb04e512c7fdcdd75f4c090a6ab5a48ae2d71fdd1306d6abce931e', 'Actif'),
 (2, 'Invite2', '4b3b24430adb04e512c7fdcdd75f4c090a6ab5a48ae2d71fdd1306d6abce931e', 'Actif'),
-(3, 'Invite3', '4b3b24430adb04e512c7fdcdd75f4c090a6ab5a48ae2d71fdd1306d6abce931e', 'Actif'),
+(3, 'Invite3', '5e8a11d5f742446083e8d270e55a5030e04a438acd03b88e39a311cecce61507', 'Actif'),
 (4, 'Invite4', '4b3b24430adb04e512c7fdcdd75f4c090a6ab5a48ae2d71fdd1306d6abce931e', 'Actif'),
-(5, 'Invite5', '4b3b24430adb04e512c7fdcdd75f4c090a6ab5a48ae2d71fdd1306d6abce931e', 'Actif'),
+(5, 'Invite5', '884c56d986688f8cde8b9824053dea6a4b9e6a583b8d33cd6ab413b9e43c89ba', 'Actif'),
 (6, 'Invite6', '4b3b24430adb04e512c7fdcdd75f4c090a6ab5a48ae2d71fdd1306d6abce931e', 'Actif'),
 (7, 'Invite7', '4b3b24430adb04e512c7fdcdd75f4c090a6ab5a48ae2d71fdd1306d6abce931e', 'Actif'),
 (8, 'Invite8', '4b3b24430adb04e512c7fdcdd75f4c090a6ab5a48ae2d71fdd1306d6abce931e', 'Actif'),
 (9, 'Invite9', '4b3b24430adb04e512c7fdcdd75f4c090a6ab5a48ae2d71fdd1306d6abce931e', 'Actif'),
 (10, 'Invite10', '4b3b24430adb04e512c7fdcdd75f4c090a6ab5a48ae2d71fdd1306d6abce931e', 'Actif'),
 (11, 'john.paul', 'db9bba53bd2c624145c7b2fbe82916b86ac52add6dd165d1329cfc754867d2c2', 'Actif'),
-(12, 'principal', 'db9bba53bd2c624145c7b2fbe82916b86ac52add6dd165d1329cfc754867d2c2', 'Actif'),
+(12, 'principal', 'b7d67e590348ccc39bf0b155ace4eb6e970477399ab142d39a12052474e693a4', 'Actif'),
 (13, 'paul.dupont', '19e1a7b8373ed21040d8aa8850a58ea7e0de892e2d8b9bc1f3bb139051974226', 'Actif'),
-(14, 'anne.martin', '12db371a530f2bb14582554ed14b7ac4b0587a7aa78fb242df9e880ca0e128d0', 'Actif'),
-(16, 'sophie.moreau', 'c789363a71e8a6693346c1db57c2eff069fa1c615dbbe4702e8f58a9581a3063', 'Actif'),
-(17, 'adrien.bernard', '7641e40d02e9746ade897231845488f9c09e44c6df40fd4ab14645c7b77c9c57', 'Actif'),
-(18, 'sophie.renaud', '65ca41eef8e319315124ce478067be1a3cc1ad610f70376193db7c940bd188b8', 'Actif'),
+(14, 'anne.martin', '2dc7189b06acbf2b678f77b3f5263e52481d203e5f201aaef7d80d24be2c5cc9', 'Actif'),
+(16, 'sophie.moreau', '5d0566f2feb17fcb3a0f6d85c90dffcece5c20ac773d363d84229f0fdc1df1c7', 'Actif'),
+(17, 'adrien.bernard', 'db98311a56871520238374d6f13f43c72f9a71c6c4934e9a43934d9f8490349d', 'Actif'),
+(18, 'sophie.renaud', '68195ba53fb87b0a7f751238effd98ca64aec69bccda1aee62f2b4f385196165', 'Actif'),
 (19, 'quentin.muller', '65b55e2f11d3e1db1022a3f53d48cb11dd8358bed7b7d20e4d36e8c77070a049', 'Actif'),
-(20, 'leo.mercier', '40b4984c7e7846edc8a2da41f2a1132a18a63bd692ee58f6af0cdf86fa0b8db1', 'Actif'),
-(21, 'clara.garcia', 'a0b05812c55354086be103fe86d4cf3630c4f3c8984bda6efa47e380cd666c98', 'Actif'),
-(22, 'helene.blanc', 'f62bac7d4014bd7a3d8b5bb87ec7679ef1b1dfc660272904d07fc3cc8d754f85', 'Actif'),
+(20, 'leo.mercier', '40b4984c7e7846edc8a2da41f2a1132a18a63bd692ee58f6af0cdf86fa0b8db1', 'Désactivé'),
+(21, 'clara.garcia', '539d2d8616cf9637157ebe4c2305f27fc732b3b4caf8fa64a3921121e47c16b1', 'Actif'),
+(22, 'helene.blanc', 'f62bac7d4014bd7a3d8b5bb87ec7679ef1b1dfc660272904d07fc3cc8d754f85', 'Désactivé'),
 (23, 'sophie.fournier', '94f6705da1dfc78384590a8d1cc05e95569acec74caab3542a04ce0d7ea9ed3e', 'Actif'),
 (24, 'laurent.simon', 'a374217e3af7553ee67161a1b754cd21e9ff219e74a8bd2a1cb2799ac663206b', 'Actif'),
 (25, 'gregory.odet', '2c2a84df675504d889097a54aee28dc33b8aa12e4d92eb50aa2f1e97958d1b85', 'Actif'),
@@ -338,7 +389,8 @@ INSERT INTO `t_compte_cpt` (`cpt_id`, `cpt_pseudo`, `cpt_mdp`, `cpt_etat`) VALUE
 (216, 'sophie.garcia', 'e61613f998654c76c93b3e8f0e51d52de75fae68e764843e64f3cdb77e8424a2', 'Actif'),
 (217, 'jule.paul', 'defrgefrbgfrgfdfzedsvgfr', 'Actif'),
 (218, 'jean.dupont', '97d73cc480ceda4fd641964549d5b946ff539496900c65f9c7b41bbcd8014cb8', 'Actif'),
-(219, 'Invite 11', '9ba3541e3235338dcd4105ff59ea837ae676ae9a073f07bf40924a1db16b9fd3', 'Actif');
+(288, 'invite888', 'e874b0066dbdb60ab746028fcf0dbad841f619924a8dfb58a84233337d3c8353', 'Actif'),
+(290, 'luc.bernard', '81e21f93742b141ee3edae31883289c2e9fa0099588ca7d1d0f7885ef6f04825', 'Actif');
 
 --
 -- Déclencheurs `t_compte_cpt`
@@ -348,19 +400,19 @@ CREATE TRIGGER `trg_delete_admin` BEFORE DELETE ON `t_compte_cpt` FOR EACH ROW B
     DECLARE id_admin_principal INT;
     DECLARE statut_utilisateur VARCHAR(50);
 
-    -- 1️⃣ Récupérer le statut du profil lié au compte supprimé
+    --  Récupérer le statut du profil lié au compte supprimé
     SELECT pfl_statut INTO statut_utilisateur
     FROM t_profil_pfl
     WHERE cpt_id = OLD.cpt_id
     LIMIT 1;
 
-    -- 2️⃣ Récupérer l'identifiant du compte administrateur principal
+    --  Récupérer l'identifiant du compte administrateur principal
     SELECT cpt_id INTO id_admin_principal
     FROM t_compte_cpt
     WHERE cpt_pseudo = 'principal'
     LIMIT 1;
 
-    -- 3️⃣ Si le compte supprimé est bien un administrateur
+    --  Si le compte supprimé est bien un administrateur
     IF statut_utilisateur = 'Administrateur' THEN
 
         -- Supprimer toutes les actualités qu'il a publiées
@@ -433,10 +485,6 @@ CREATE TABLE `t_etat_ett` (
 --
 
 INSERT INTO `t_etat_ett` (`rsc_id`, `idp_id`) VALUES
-(1, 1),
-(1, 6),
-(2, 1),
-(2, 7),
 (3, 3),
 (3, 8),
 (5, 4),
@@ -490,83 +538,68 @@ CREATE TABLE `t_inscription_isc` (
 --
 
 INSERT INTO `t_inscription_isc` (`cpt_id`, `res_id`, `isc_date`, `isc_role`) VALUES
+(5, 12, '2025-12-02 04:33:40.0', 'Passager'),
+(12, 12, '2025-10-07 09:58:20.0', 'Conducteur'),
+(12, 23, '2025-10-07 09:58:20.0', 'Passager'),
+(12, 30, '2025-10-07 09:58:20.0', 'Passager'),
+(14, 3, '2025-10-07 09:58:20.0', 'Passager'),
+(14, 11, '2025-10-07 09:58:20.0', 'Passager'),
+(18, 3, '2025-10-07 09:58:20.0', 'Conducteur'),
+(18, 9, '2025-10-07 09:58:20.0', 'Conducteur'),
 (18, 21, '2025-10-07 09:58:20.0', 'Conducteur'),
-(18, 31, '2025-11-02 22:23:12.0', 'Conducteur'),
-(20, 3, '2025-10-07 09:58:20.0', 'Conducteur'),
-(22, 13, '2025-10-07 09:58:20.0', 'Passager'),
+(18, 24, '2025-10-07 09:58:20.0', 'Passager'),
+(18, 30, '2025-10-07 09:58:20.0', 'Conducteur'),
 (22, 15, '2025-10-07 09:58:20.0', 'Passager'),
-(22, 19, '2025-10-07 09:58:20.0', 'Passager'),
 (22, 27, '2025-10-07 09:58:20.0', 'Passager'),
-(23, 14, '2025-10-07 09:58:20.0', 'Passager'),
-(28, 27, '2025-10-07 09:58:20.0', 'Passager'),
-(33, 8, '2025-10-07 09:58:20.0', 'Passager'),
-(35, 2, '2025-10-07 09:58:20.0', 'Passager'),
-(41, 5, '2025-10-07 09:58:20.0', 'Passager'),
 (41, 23, '2025-10-07 09:58:20.0', 'Conducteur'),
-(41, 24, '2025-10-07 09:58:20.0', 'Passager'),
-(48, 8, '2025-10-07 09:58:20.0', 'Passager'),
-(48, 26, '2025-10-07 09:58:20.0', 'Conducteur'),
-(50, 7, '2025-10-07 09:58:20.0', 'Passager'),
-(51, 12, '2025-10-07 09:58:20.0', 'Passager'),
 (53, 12, '2025-11-02 22:25:41.0', 'Conducteur'),
 (53, 24, '2025-10-07 09:58:20.0', 'Conducteur'),
-(53, 32, '2025-11-02 22:25:41.0', 'Conducteur'),
-(54, 18, '2025-10-07 09:58:20.0', 'Passager'),
-(66, 30, '2025-10-07 09:58:20.0', 'Passager'),
-(67, 20, '2025-10-07 09:58:20.0', 'Passager'),
-(69, 7, '2025-10-07 09:58:20.0', 'Conducteur'),
+(54, 18, '2025-10-07 09:58:20.0', 'Conducteur'),
 (70, 6, '2025-10-07 09:58:20.0', 'Conducteur'),
-(72, 23, '2025-10-07 09:58:20.0', 'Passager'),
-(80, 8, '2025-10-07 09:58:20.0', 'Conducteur'),
-(81, 19, '2025-10-07 09:58:20.0', 'Passager'),
 (81, 30, '2025-10-07 09:58:20.0', 'Conducteur'),
-(88, 21, '2025-10-07 09:58:20.0', 'Passager'),
+(88, 21, '2025-10-07 09:58:20.0', 'Conducteur'),
 (95, 18, '2025-10-07 09:58:20.0', 'Passager'),
-(96, 11, '2025-10-07 09:58:20.0', 'Passager'),
-(101, 30, '2025-10-07 09:58:20.0', 'Passager'),
-(103, 17, '2025-10-07 09:58:20.0', 'Passager'),
-(106, 1, '2025-10-07 09:58:20.0', 'Passager'),
-(111, 25, '2025-10-07 09:58:20.0', 'Passager'),
+(103, 17, '2025-10-07 09:58:20.0', 'Conducteur'),
 (114, 29, '2025-10-07 09:58:20.0', 'Conducteur'),
-(116, 15, '2025-10-07 09:58:20.0', 'Passager'),
-(119, 5, '2025-10-07 09:58:20.0', 'Conducteur'),
-(119, 26, '2025-10-07 09:58:20.0', 'Passager'),
-(120, 21, '2025-10-07 09:58:20.0', 'Passager'),
-(121, 13, '2025-10-07 09:58:20.0', 'Conducteur'),
+(116, 15, '2025-10-07 09:58:20.0', 'Conducteur'),
+(120, 21, '2025-10-07 09:58:20.0', 'Conducteur'),
 (126, 15, '2025-10-07 09:58:20.0', 'Conducteur'),
 (127, 17, '2025-10-07 09:58:20.0', 'Conducteur'),
-(128, 3, '2025-10-07 09:58:20.0', 'Passager'),
-(128, 20, '2025-10-07 09:58:20.0', 'Passager'),
 (131, 6, '2025-10-07 09:58:20.0', 'Passager'),
-(134, 1, '2025-10-07 09:58:20.0', 'Passager'),
 (136, 12, '2025-10-07 09:58:20.0', 'Conducteur'),
-(138, 20, '2025-10-07 09:58:20.0', 'Conducteur'),
 (142, 27, '2025-10-07 09:58:20.0', 'Conducteur'),
-(147, 2, '2025-10-07 09:58:20.0', 'Conducteur'),
 (148, 11, '2025-10-07 09:58:20.0', 'Passager'),
 (151, 3, '2025-10-07 09:58:20.0', 'Passager'),
 (151, 11, '2025-10-07 09:58:20.0', 'Conducteur'),
-(152, 26, '2025-10-07 09:58:20.0', 'Passager'),
 (153, 12, '2025-10-07 09:58:20.0', 'Passager'),
 (158, 18, '2025-10-07 09:58:20.0', 'Conducteur'),
 (163, 9, '2025-10-07 09:58:20.0', 'Conducteur'),
 (168, 29, '2025-10-07 09:58:20.0', 'Passager'),
-(170, 14, '2025-10-07 09:58:20.0', 'Conducteur'),
-(172, 5, '2025-10-07 09:58:20.0', 'Passager'),
-(174, 19, '2025-10-07 09:58:20.0', 'Conducteur'),
 (176, 24, '2025-10-07 09:58:20.0', 'Passager'),
 (182, 23, '2025-10-07 09:58:20.0', 'Passager'),
 (187, 6, '2025-10-07 09:58:20.0', 'Passager'),
 (191, 9, '2025-10-07 09:58:20.0', 'Passager'),
-(192, 2, '2025-10-07 09:58:20.0', 'Passager'),
-(192, 7, '2025-10-07 09:58:20.0', 'Passager'),
-(192, 25, '2025-10-07 09:58:20.0', 'Passager'),
-(196, 1, '2025-10-07 09:58:20.0', 'Conducteur'),
-(198, 14, '2025-10-07 09:58:20.0', 'Passager'),
 (200, 17, '2025-10-07 09:58:20.0', 'Passager'),
-(207, 25, '2025-10-07 09:58:20.0', 'Conducteur'),
-(214, 9, '2025-10-07 09:58:20.0', 'Passager'),
 (216, 29, '2025-10-07 09:58:20.0', 'Conducteur');
+
+--
+-- Déclencheurs `t_inscription_isc`
+--
+DELIMITER $$
+CREATE TRIGGER `trg_prevent_double_inscription` BEFORE INSERT ON `t_inscription_isc` FOR EACH ROW BEGIN
+    -- Vérifie si le membre est déjà inscrit à cette réservation
+    IF EXISTS (
+        SELECT 1
+        FROM t_inscription_isc
+        WHERE cpt_id = NEW.cpt_id
+        AND res_id = NEW.res_id
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Ce membre est déjà inscrit à cette réservation.';
+    END IF;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -577,6 +610,7 @@ INSERT INTO `t_inscription_isc` (`cpt_id`, `res_id`, `isc_date`, `isc_role`) VAL
 CREATE TABLE `t_message_msg` (
   `msg_id` int(11) NOT NULL,
   `msg_code` char(20) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
+  `msg_sujet` varchar(200) NOT NULL,
   `msg_contenu` varchar(600) DEFAULT NULL,
   `msg_email` varchar(150) NOT NULL,
   `msg_reponse` varchar(600) DEFAULT NULL,
@@ -588,18 +622,25 @@ CREATE TABLE `t_message_msg` (
 -- Déchargement des données de la table `t_message_msg`
 --
 
-INSERT INTO `t_message_msg` (`msg_id`, `msg_code`, `msg_contenu`, `msg_email`, `msg_reponse`, `cpt_id`, `msg_date`) VALUES
-(1, 'A3S8KE2WT1Q3TMY4GPYW', 'Bonjour je souhaite rejoindre votre association pouvez vous m expliquer les conditions d adhesion', 'visitor1@example.com', '', NULL, '2025-10-07 10:03:28'),
-(2, 'SSBZRAD5SOWOMQIGCT2C', 'Bonsoir je voudrais savoir si on peut reserver le minibus pour la sortie de samedi', 'visitor2@example.com', '', NULL, '2025-10-07 10:03:28'),
-(3, 'XIFSU0LMI8X76RKQ4SVH', 'Bonjour est ce que vous acceptez les nouveaux benevoles pour le projet social', 'visitor3@example.com', '', NULL, '2025-10-07 10:03:28'),
-(4, '3EJOZ9XFZAQ8H3XQYXGO', 'Bonjour pouvez vous me donner des informations sur les tarifs de location', 'visitor4@example.com', '', NULL, '2025-10-07 10:03:28'),
-(5, '4B9UOE3T0HICCT5HGP8I', 'Je suis interesse pour participer a la prochaine sortie comment m inscrire', 'visitor5@example.com', 'Bonjour, merci pour votre message. Vous pouvez venir assister à notre prochaine réunion avant de vous inscrire officiellement.', 1, '2025-10-07 10:03:28'),
-(6, 'Y3X80J0G50RCXN22PXGX', 'Merci pour l organisation de la sortie c etait tres bien', 'member1@example.com', '', 13, '2025-10-07 10:03:28'),
-(7, 'WDZRMH3FNBDVPINE9NNO', 'Le vehicule Renault a encore une anomalie le phare arriere ne fonctionne pas', 'member2@example.com', '', 13, '2025-10-07 10:03:28'),
-(8, 'JARJI8QLHBIAWPUBLQDI', 'Peut on avoir la liste des participants pour la prochaine sortie', 'member3@example.com', '', 14, '2025-10-07 10:03:28'),
-(9, '07HE42X6G26OC7T3BD4Z', 'J ai un souci de connexion je ne recois pas le code de verification', 'member4@example.com', '', 14, '2025-10-07 10:03:28'),
-(10, 'G52EFUJEIR9UY7S361GH', 'Proposition organiser une formation secourisme pendant la prochaine sortie', 'member5@example.com', '', 14, '2025-10-07 10:03:28'),
-(11, 'QWERTYUIOPASDFGHJKLZ', 'Bonjour, je souhaiterais connaître les conditions pour participer à une sortie.', 'visiteur@example.com', NULL, NULL, '2025-11-02 02:09:25');
+INSERT INTO `t_message_msg` (`msg_id`, `msg_code`, `msg_sujet`, `msg_contenu`, `msg_email`, `msg_reponse`, `cpt_id`, `msg_date`) VALUES
+(1, 'A3S8KE2WT1Q3TMY4GPYW', 'Je souhaite rejoindre l\'association.', 'Bonjour je souhaite rejoindre votre association pouvez vous m expliquer les conditions d adhesion', 'visitor1@example.com', '', NULL, '2025-10-07 10:03:28'),
+(2, 'SSBZRAD5SOWOMQIGCT2C', 'Je souhaite rejoindre l\'association.', 'Bonsoir je souhaite rejoindre l\'association.', 'visitor2@example.com', '', NULL, '2025-10-07 10:03:28'),
+(3, 'XIFSU0LMI8X76RKQ4SVH', 'Je souhaite rejoindre l\'association.', 'Bonjour est ce que je peux rejoindre l\'association ?', 'visitor3@example.com', '', NULL, '2025-10-07 10:03:28'),
+(4, '3EJOZ9XFZAQ8H3XQYXGO', 'Je souhaite me renseigner sur l\'association.', 'Bonjour pouvez vous me donner des informations sur les tarifs de location', 'visitor4@example.com', '', NULL, '2025-10-07 10:03:28'),
+(5, '4B9UOE3T0HICCT5HGP8I', 'Je souhaite rejoindre l\'association.', 'Je suis intéressé par votre association.', 'visitor5@example.com', 'Bonjour, merci pour votre message. Vous pouvez venir assister à notre prochaine réunion avant de vous inscrire officiellement.', 12, '2025-10-07 10:03:28'),
+(6, 'Y3X80J0G50RCXN22PXGX', 'Je souhaite me renseigner sur l\'association.', 'Bonjour, je veux me renseigner sur votre association et son fonctionnement.', 'visitor6@example.com', '', NULL, '2025-10-07 10:03:28'),
+(7, 'WDZRMH3FNBDVPINE9NNO', 'Je souhaite rejoindre l\'association.', 'Bonjour. Comment puis-je m\'inscrire à l\'association ?', 'visitor7@example.com', '', NULL, '2025-10-07 10:03:28'),
+(8, 'JARJI8QLHBIAWPUBLQDI', 'Je souhaite me renseigner sur l\'association.', 'Est-ce que mon fils de 8ans peut s\'inscrire à l\'association ?', 'visitor8@example.com', '', NULL, '2025-10-07 10:03:28'),
+(9, '07HE42X6G26OC7T3BD4Z', 'Je souhaite me renseigner sur l\'association.', 'Salut, vous acceptez tout le monde ?', 'visitor9@example.com', '', NULL, '2025-10-07 10:03:28'),
+(10, 'G52EFUJEIR9UY7S361GH', 'Je souhaite rejoindre l\'association.\r\n', 'Bonjour, je souhaite créer un compte.', 'visitor10@example.com', '', NULL, '2025-10-07 10:03:28'),
+(11, 'QWERTYUIOPASDFGHJKLZ', 'Je souhaite me renseigner sur l\'association.', 'Bonjour, je souhaiterais connaître les conditions pour rejoindre l\'association.', 'visiteur@example.com', 'Bonjour, il n\'y a pas vraiment de condition pour y accéder.', 13, '2025-11-02 02:09:25'),
+(24, '56RJQTP4LBW2738291ZF', 'Je souhaite me renseigner sur l\'association.', 'Hello, renseignez-moi. \'yes\'', 'lenaichounleba@gmail.com', NULL, NULL, '2025-11-17 08:30:45'),
+(26, '6TI619GAC2S37U30HK9W', 'Je souhaite rejoindre l\'association.', 'iuhygfchkpol', 'lovehounleba@gmail.com', NULL, NULL, '2025-11-17 08:45:34'),
+(29, '1D6BNE6Z36Y0MX7957KQ', 'Je souhaite rejoindre l\'association.', 'Hello, je veux me renseigner.', 'lovehounleba@gmail.com', '', 14, '2025-11-17 08:54:31'),
+(46, 'LU2J3EZBNX6G960T3411', 'Je souhaite rejoindre l\'association.', 'Je souhaite vous rejoindre.', 'lovehounleba@gmail.com', 'Bonjour, merci pour votre message. Vous pouvez venir assister à notre prochaine réunion avant de vous inscrire officiellement.', 12, '2025-11-20 14:02:42'),
+(47, '4RADG5KVU0NJ19XY89I6', 'Je souhaite me renseigner sur l\'association.', 'Hello, je veux connaitre les conditions pour s\'inscrire.', 'lovehounleba@gmail.com', 'Bonjour, merci pour votre message. Vous pouvez venir assister à notre prochaine réunion avant de vous inscrire officiellement.', 14, '2025-11-25 08:19:19'),
+(48, 'ZQD01TFA2BW4H687O5KG', 'Je souhaite me renseigner sur l\'association.', 'Hello, Monsieur, je veux me renseigner sur l\'association.', 'lovehounleba@gmail.com', 'Bonjour, merci pour votre message. Vous pouvez venir assister à notre prochaine réunion avant de vous inscrire officiellement.', 13, '2025-11-27 16:16:43'),
+(49, '16N68GIL234DSBKYH7V9', 'Je souhaite me renseigner sur l\'association.', 'Quel est le prix de l\'adhésion ?', 'arthur.seite@etudiant.univ-brest.fr', 'C\'est pas cher.', 12, '2025-12-02 08:49:19');
 
 -- --------------------------------------------------------
 
@@ -617,12 +658,12 @@ CREATE TABLE `t_motif_mtf` (
 --
 
 INSERT INTO `t_motif_mtf` (`mtf_id`, `mtf_intitule`) VALUES
-(1, 'Revision_moteur'),
-(2, 'Panne_batterie'),
-(3, 'Accident_mineur'),
-(4, 'Probleme_admin'),
-(5, 'Vidange_periodique'),
-(6, 'Nettoyage_complet');
+(1, 'Revision moteur'),
+(2, 'Panne batterie'),
+(3, 'Accident mineur'),
+(4, 'Probleme admin'),
+(5, 'Vidange periodique'),
+(6, 'Nettoyage complet');
 
 -- --------------------------------------------------------
 
@@ -684,7 +725,7 @@ INSERT INTO `t_profil_pfl` (`pfl_id`, `pfl_nom`, `pfl_prenom`, `pfl_email`, `pfl
 (1, 'Principal', 'Admin', 'principal.admin@example.com', '0123456789', '1975-01-01', '157 Avenue de la Gare', 'Administrateur', 1, 12),
 (2, 'Dupont', 'Paul', 'paul.dupont@example.com', '0601020304', '1980-05-12', '72 Boulevard de la Paix', 'Administrateur', 2, 13),
 (3, 'Martin', 'Anne', 'anne.martin@example.com', '0602030405', '1978-11-22', '88 Rue de la Gare', 'Administrateur', 3, 14),
-(4, 'Bernard', 'Luc', 'luc.bernard@example.com', '0603040506', '1982-07-07', '108 Boulevard Victor Hugo', 'Administrateur', 4, 15),
+(4, 'Bernard', 'Luc', 'luc.bernard@example.com', '0603040506', '1982-07-07', '108 Boulevard Victor Hugo', 'Administrateur', 4, 290),
 (5, 'Moreau', 'Sophie', 'sophie.moreau@example.com', '0604050607', '1979-03-03', '36 Avenue des Fleurs', 'Administrateur', 5, 16),
 (6, 'Bernard', 'Adrien', 'adrien.bernard1@example.com', '0613356886', '1993-05-08', '98 Avenue des Champs', 'Membre', 4, 17),
 (7, 'Renaud', 'Sophie', 'sophie.renaud2@example.com', '0623756669', '1991-12-18', '30 Allée de la République', 'Membre', 2, 18),
@@ -921,33 +962,20 @@ CREATE TABLE `t_reservation_res` (
 --
 
 INSERT INTO `t_reservation_res` (`res_id`, `res_nom`, `res_date_debut`, `res_date_fin`, `res_bilan_reservation`, `res_statut`, `rsc_id`) VALUES
-(1, 'Sortie_associative_a_Paris', '2025-10-01 09:00:00.0', '2025-10-01 13:00:00.0', 'Voyage bien passe belle ambiance', 'Terminee', 1),
-(2, 'Mission_caritative_a_Nantes', '2025-10-02 08:00:00.0', '2025-10-02 17:00:00.0', 'Retard leger au depart mais journee reussie', 'Terminee', 2),
-(3, 'Sortie_culturelle_a_Lille', '2025-10-03 09:00:00.0', '2025-10-03 14:00:00.0', 'Bonne participation des membres', 'Planifiee', 3),
-(5, 'Excursion a La Rochelle', '2025-10-05 09:00:00.0', '2025-10-05 15:00:00.0', 'Trajet agreable meteo favorable', 'Terminee', 5),
+(3, 'Sortie_culturelle_a_Lille', '2025-10-06 10:00:52.0', '2024-12-17 12:00:52.0', 'Bonne participation des membres', 'Planifiee', 3),
 (6, 'Sortie decouverte de Saint Etienne', '2025-10-06 10:00:00.0', '2025-10-06 13:00:00.0', 'Sortie annulee a cause de la pluie', 'Annulee', 6),
-(7, 'Voyage_humanitaire_a_Lyon', '2025-10-07 07:00:00.0', '2025-10-07 20:00:00.0', 'Belle mobilisation des membres', 'Terminee', 1),
-(8, 'Sortie_detente_des_membres', '2025-10-08 09:00:00.0', '2025-10-08 14:00:00.0', 'Moment convivial entre adherents', 'Terminee', 2),
 (9, 'Visite_orphelinat_Dijon', '2025-10-09 08:30:00.0', '2025-10-09 16:00:00.0', 'Don de vivres effectue avec succes', 'Terminee', 3),
 (11, 'Mission_medicale_Rennes', '2025-10-11 06:00:00.0', '2025-10-11 18:00:00.0', 'Bilan positif forte participation', 'Terminee', 5),
 (12, 'Voyage_touristique', '2025-10-12 09:00:00.0', '2025-10-12 18:00:00.0', 'Sortie agreable quelques retards', 'Planifiee', 6),
-(13, 'Transport_materiel_evenementiel', '2025-11-02 19:00:00.0', '2025-11-02 22:00:00.0', 'Probleme mecanique remplace par un autre vehicule', 'En cours', 1),
-(14, 'Sortie_commemorative', '2025-10-13 09:00:00.0', '2025-10-13 14:00:00.0', 'Tout s est bien deroule ambiance festive', 'Terminee', 2),
 (15, 'Deplacement_conference', '2025-10-15 08:00:00.0', '2025-10-15 18:00:00.0', 'Voyage reussi conference enrichissante', 'Terminee', 3),
 (17, 'Voyage_communautaire', '2025-10-17 10:00:00.0', '2025-10-17 14:00:00.0', 'Bonne ambiance generale', 'Terminee', 5),
 (18, 'Sortie_decouverte_patrimoine', '2025-10-18 09:00:00.0', '2025-10-18 16:00:00.0', 'Sortie annulee indisponibilite vehicule', 'Annulee', 6),
-(19, 'Voyage_suivi_projets', '2025-11-19 08:00:00.0', '2025-11-19 19:00:00.0', 'Travaux bien avances', 'Terminee', 1),
-(20, 'Sortie_champetre', '2025-10-20 09:00:00.0', '2025-10-20 13:00:00.0', 'Journee conviviale a la campagne', 'Terminee', 2),
-(21, 'Sortie_plage', '2025-10-21 09:00:00.0', '2025-10-21 15:00:00.0', 'Sortie confirmee 12 inscrits', 'Terminee', 3),
-(23, 'Collecte_fonds', '2025-10-23 08:00:00.0', '2025-10-23 17:00:00.0', 'Mission annulee faute de participants', 'Annulee', 5),
+(21, 'Sortie_plage', '2025-12-21 09:00:00.0', '2025-12-21 15:00:00.0', 'Sortie confirmee 12 inscrits', 'Terminee', 3),
+(23, 'Collecte_fonds', '2025-12-23 08:00:00.0', '2025-12-23 17:00:00.0', 'Mission annulee faute de participants', 'Annulee', 5),
 (24, 'Excursion_educative', '2025-10-24 09:00:00.0', '2025-10-24 14:00:00.0', 'Belle experience pour nouveaux membres', 'Terminee', 6),
-(25, 'Voyage_social', '2025-10-25 07:00:00.0', '2025-10-25 20:00:00.0', 'Bonne coordination generale', 'Terminee', 1),
-(26, 'Transport_interne', '2025-10-26 10:00:00.0', '2025-10-26 13:00:00.0', 'Reservation confirmee vehicule pret', 'Planifiee', 2),
 (27, 'Sortie_benevolat', '2025-10-27 09:00:00.0', '2025-10-27 15:00:00.0', 'Activite benevole annulee suite a indispo', 'Annulee', 3),
 (29, 'Sortie_fin_annee', '2025-10-29 09:00:00.0', '2025-10-29 17:00:00.0', 'Belle expérience, tout s’est bien déroulé.', 'Terminee', 5),
-(30, 'Voyage_supervision', '2025-10-30 08:00:00.0', '2025-10-30 17:00:00.0', 'Belle expérience, tout s’est bien déroulé.', 'Terminee', 6),
-(31, 'Sortie spéciale', '2025-11-15 09:00:00.0', '2025-11-15 13:00:00.0', '', 'Planifiee', 2),
-(32, 'Sortie spéciale', '2025-11-15 09:00:00.0', '2025-11-15 13:00:00.0', '', 'Planifiee', 2);
+(30, 'Voyage_supervision', '2025-10-30 08:00:00.0', '2025-10-30 17:00:00.0', 'Belle expérience, tout s’est bien déroulé.', 'Terminee', 6);
 
 -- --------------------------------------------------------
 
@@ -969,13 +997,12 @@ CREATE TABLE `t_ressource_rsc` (
 --
 
 INSERT INTO `t_ressource_rsc` (`rsc_id`, `rsc_nom`, `rsc_photo`, `rsc_description`, `rsc_jauge`, `rsc_url`) VALUES
-(1, 'Minibus_Toyota_12_places', 'minibus1.jpg', 'Minibus Toyota 12 places clim coffre spacieux', 12, 'docs/minibus_toyota_12.pdf'),
-(2, 'Fourgon_Mercedes_9_places', 'tulipe.webp', 'Fourgon Mercedes 9 places ideal pour sorties', 9, 'doctest2.pdf'),
-(3, 'Voiture_Peugeot_5_places', 'love.jpg', 'Peugeot 5 places economique fiable', 5, 'doc1.pdf'),
-(5, 'Minibus_Renault_15_places', 'leno.jpeg', 'Renault 15 places GPS integre', 15, 'doc2.pdf'),
-(6, 'Van_Ford_8_places', 'logo.jpg', 'Ford Transit 8 places grande soute', 8, 'docs/ford_van_8.pdf'),
-(8, 'Minibus FK60', 'minibusfk60.jpg', 'Un nouveau minibus de 60 places.', 60, 'minibusfk60.pdf'),
-(9, 'Minibus FK50', 'minibusfk50.jpg', 'Un nouveau minibus de 50 places.', 50, 'minibusfk50.pdf');
+(3, 'Voiture Peugeot 5 places', 'img_ressources.jpg', 'Peugeot 5 places economique fiable', 5, 'doc1.pdf'),
+(5, 'Minibus Renault 15 places', 'img_ressources.jpg', 'Renault 15 places GPS integre', 15, 'doc2.pdf'),
+(6, 'Van Ford 8 places', 'img_ressources.jpg', 'Ford Transit 8 places grande soute', 8, 'ford_van_8.pdf'),
+(8, 'Minibus FK60', 'img_ressources.jpg', 'Un nouveau minibus de 60 places.', 60, 'minibusfk60.pdf'),
+(10, 'Minibus FK50', 'img_ressources.jpg', 'Un nouveau minibus de 50 places.', 50, 'minibusfk50.pdf'),
+(18, 'Minibus888', 'resaweb_minibus888_photo.jpg', 'Hello, ceci est le minibus888', 20, 'resaweb_minibus888_pdf.pdf');
 
 -- --------------------------------------------------------
 
@@ -1046,6 +1073,31 @@ INSERT INTO `t_ville_vll` (`vll_id`, `vll_code_postal`, `vll_nom`) VALUES
 (8, 67000, 'Strasbourg'),
 (9, 31000, 'Toulouse'),
 (10, 21000, 'Dijon');
+
+-- --------------------------------------------------------
+
+--
+-- Doublure de structure pour la vue `vue_reservations_detaillees`
+-- (Voir ci-dessous la vue réelle)
+--
+CREATE TABLE `vue_reservations_detaillees` (
+`res_id` int(11)
+,`res_date_debut` datetime(1)
+,`res_date_fin` datetime(1)
+,`ressource` varchar(100)
+,`rsc_id` int(11)
+,`conducteur` varchar(100)
+,`passagers` mediumtext
+);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la vue `vue_reservations_detaillees`
+--
+DROP TABLE IF EXISTS `vue_reservations_detaillees`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`e22507733sql`@`%` SQL SECURITY DEFINER VIEW `vue_reservations_detaillees`  AS SELECT `t_reservation_res`.`res_id` AS `res_id`, `t_reservation_res`.`res_date_debut` AS `res_date_debut`, `t_reservation_res`.`res_date_fin` AS `res_date_fin`, `t_ressource_rsc`.`rsc_nom` AS `ressource`, `t_ressource_rsc`.`rsc_id` AS `rsc_id`, (select `t_compte_cpt`.`cpt_pseudo` from (`t_inscription_isc` join `t_compte_cpt` on(`t_inscription_isc`.`cpt_id` = `t_compte_cpt`.`cpt_id`)) where `t_inscription_isc`.`res_id` = `t_reservation_res`.`res_id` and `t_inscription_isc`.`isc_role` = 'Conducteur' limit 1) AS `conducteur`, (select group_concat(`t_compte_cpt`.`cpt_pseudo` separator ', ') from (`t_inscription_isc` join `t_compte_cpt` on(`t_inscription_isc`.`cpt_id` = `t_compte_cpt`.`cpt_id`)) where `t_inscription_isc`.`res_id` = `t_reservation_res`.`res_id` and `t_inscription_isc`.`isc_role` = 'Passager') AS `passagers` FROM (`t_reservation_res` join `t_ressource_rsc` on(`t_reservation_res`.`rsc_id` = `t_ressource_rsc`.`rsc_id`)) ;
 
 --
 -- Index pour les tables déchargées
@@ -1157,13 +1209,13 @@ ALTER TABLE `t_ville_vll`
 -- AUTO_INCREMENT pour la table `t_actualite_act`
 --
 ALTER TABLE `t_actualite_act`
-  MODIFY `act_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `act_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT pour la table `t_compte_cpt`
 --
 ALTER TABLE `t_compte_cpt`
-  MODIFY `cpt_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=220;
+  MODIFY `cpt_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=291;
 
 --
 -- AUTO_INCREMENT pour la table `t_document_dcm`
@@ -1181,7 +1233,7 @@ ALTER TABLE `t_indisponibilite_idp`
 -- AUTO_INCREMENT pour la table `t_message_msg`
 --
 ALTER TABLE `t_message_msg`
-  MODIFY `msg_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `msg_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT pour la table `t_motif_mtf`
@@ -1205,7 +1257,7 @@ ALTER TABLE `t_reservation_res`
 -- AUTO_INCREMENT pour la table `t_ressource_rsc`
 --
 ALTER TABLE `t_ressource_rsc`
-  MODIFY `rsc_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `rsc_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT pour la table `t_reunion_reu`

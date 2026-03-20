@@ -84,9 +84,8 @@ _id_
 nom
 date_debut
 date_fin
-statut
 bilan_reservation
-</panel_attributes>
+statut</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -102,7 +101,7 @@ bilan_reservation
 _id_
 nom
 photo
-descriptif
+description
 jauge
 url</panel_attributes>
     <additional_attributes/>
@@ -118,11 +117,10 @@ url</panel_attributes>
     <panel_attributes>Indisponibilite
 --
 _id_
-statut
 date_debut
 date_fin
-commentaire
-</panel_attributes>
+statut
+commentaire</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -246,20 +244,20 @@ fait &gt;</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>602</x>
-      <y>259</y>
-      <w>63</w>
-      <h>91</h>
+      <x>553</x>
+      <y>266</y>
+      <w>70</w>
+      <h>105</h>
     </coordinates>
     <panel_attributes>Message
 --
 _id_
-email
-date_envoi
 code
+sujet
 contenu
+email
 reponse
-</panel_attributes>
+date</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -267,14 +265,14 @@ reponse
     <coordinates>
       <x>511</x>
       <y>196</y>
-      <w>133</w>
-      <h>77</h>
+      <w>98</w>
+      <h>84</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=0..1
 m2=0..*
 repond &gt;</panel_attributes>
-    <additional_attributes>10.0;10.0;170.0;90.0</additional_attributes>
+    <additional_attributes>10.0;10.0;100.0;100.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
@@ -359,9 +357,9 @@ date_inscription</panel_attributes>
       <x>336</x>
       <y>637</y>
       <w>287</w>
-      <h>21</h>
+      <h>35</h>
     </coordinates>
-    <panel_attributes>Diagramme UML de classe de la Base de Données ResaWeb 
+    <panel_attributes>Diagramme UML de classe de la Base de Données de ResaWeb 
 style=wordwrap</panel_attributes>
     <additional_attributes/>
   </element>
