@@ -20,26 +20,26 @@ Le système s'articule autour de **trois rôles distincts** :
 
 ## 📸 Aperçu de l'application
 
-### Page d'accueil avec la liste des dernières actualités
-![Accueil](../V2/docs/screenshots/accueil_resaweb.png)
+### Page d'accueil — Actualités
+![Accueil](https://raw.githubusercontent.com/lenaic-hounleba/bus-reservation-app/V2/docs/screenshots/accueil_resaweb.png)
 
 ### Liste des véhicules (Admin)
-![Véhicules](../V2/docs/screenshots/liste_vehicules_resaweb.png)
+![Véhicules](https://raw.githubusercontent.com/lenaic-hounleba/bus-reservation-app/V2/docs/screenshots/liste_vehicules_resaweb.png)
 
 ### Séances réservées (Admin)
-![Réservations](../V2/docs/screenshots/liste_reservations.png)
+![Réservations](https://raw.githubusercontent.com/lenaic-hounleba/bus-reservation-app/V2/docs/screenshots/liste_reservations.png)
 
 ### Gestion des comptes (Admin)
-![Comptes](../V2/docs/screenshots/comptes_admin.png)
+![Comptes](https://raw.githubusercontent.com/lenaic-hounleba/bus-reservation-app/V2/docs/screenshots/comptes_admin.png)
 
 ### Messages des visiteurs (Admin)
-![Messages](../V2/docs/screenshots/messages_des_visiteurs.png)
+![Messages](https://raw.githubusercontent.com/lenaic-hounleba/bus-reservation-app/V2/docs/screenshots/messages%20des%20visiteurs.png)
 
 ### Formulaire de contact (Visiteur)
-![Contact](../V2/docs/screenshots/contact_resaweb.png)
+![Contact](https://raw.githubusercontent.com/lenaic-hounleba/bus-reservation-app/V2/docs/screenshots/contact_resaweb.png)
 
 ### Suivi de demande (Visiteur)
-![Suivi](../V2/docs/screenshots/suivi_demande_resaweb.png)
+![Suivi](https://raw.githubusercontent.com/lenaic-hounleba/bus-reservation-app/V2/docs/screenshots/suivi_demande_resaweb.png)
 
 ---
 
