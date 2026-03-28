@@ -1,11 +1,12 @@
+
+# 🚌 ResaWeb - Web Application for Vehicle Reservation & Resource Management
+
 ![Bus Reservation](https://img.shields.io/badge/System-Bus%20Reservation-green)
 ![PHP](https://img.shields.io/badge/PHP-Backend-blue)
 ![CodeIgniter](https://img.shields.io/badge/Framework-CodeIgniter-orange)
 ![MySQL](https://img.shields.io/badge/Database-MySQL-blue)
 ![MVC](https://img.shields.io/badge/Architecture-MVC-green)
 ![Responsive](https://img.shields.io/badge/UI-Responsive-purple)
-
-# 🚌 ResaWeb - Web Application for Vehicle Reservation & Resource Management
 
 > Application web complète de gestion de ressources et de réservations pour une association, que j'ai développée dans le cadre du module **ISI (Ingénierie des Systèmes d'Information)** en L3 Informatique à l'**Université de Bretagne Occidentale (UBO)**.
 
