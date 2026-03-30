@@ -1,4 +1,3 @@
-
 # 🚌 ResaWeb - Web Application for Vehicle Reservation & Resource Management
 
 ![Bus Reservation](https://img.shields.io/badge/System-Bus%20Reservation-green)
@@ -8,225 +7,225 @@
 ![MVC](https://img.shields.io/badge/Architecture-MVC-green)
 ![Responsive](https://img.shields.io/badge/UI-Responsive-purple)
 
-> Application web complète de gestion de ressources et de réservations pour une association, que j'ai développée dans le cadre du module **ISI (Ingénierie des Systèmes d'Information)** en L3 Informatique à l'**Université de Bretagne Occidentale (UBO)**.
+> Complete web application for resource and reservation management for an association, developed as part of the **ISI (Information Systems Engineering)** module in L3 Computer Science at the **Université de Bretagne Occidentale (UBO)**.
 
 ---
 
 ## 📌 Description
 
-ResaWeb est un système d'information web permettant aux membres d'une association de **réserver des véhicules** en ligne. L'application gère l'ensemble du cycle de vie d'une réservation : consultation des véhicules disponibles, réservation pour un groupe de passagers, gestion des indisponibilités, communication interne, et suivi des réunions.
+ResaWeb is a web information system allowing members of an association to **reserve vehicles** online. The application manages the entire lifecycle of a reservation: browsing available vehicles, booking for a group of passengers, managing unavailabilities, internal communication, and meeting tracking.
 
-Le système s'articule autour de **trois rôles distincts** :
+The system is built around **three distinct roles**:
 
-| Rôle | Droits |
+| Role | Rights |
 |---|---|
-| 👤 Visiteur | Consulter les véhicules disponibles, envoyer un message à l'admin |
-| 🙋 Membre | Réserver un véhicule, rejoindre des réunions, consulter son historique |
-| 🛠️ Administrateur | Gérer les ressources, les comptes, les indisponibilités et les actualités |
+| 👤 Visitor | Browse available vehicles, send a message to the admin |
+| 🙋 Member | Reserve a vehicle, join meetings, view their history |
+| 🛠️ Administrator | Manage resources, accounts, unavailabilities and news |
 
 ---
 
-## 📸 Aperçu de l'application
+## 📸 Application Preview
 
-### Page d'accueil avec les dernières actualités
-![Accueil](https://raw.githubusercontent.com/lenaic-hounleba/bus-reservation-app/V2/docs/screenshots/accueil_resaweb.png)
+### Home page with latest news
+![Home](https://raw.githubusercontent.com/lenaic-hounleba/bus-reservation-app/V2/docs/screenshots/accueil_resaweb.png)
 
-### Liste des véhicules (Admin)
-![Véhicules](https://raw.githubusercontent.com/lenaic-hounleba/bus-reservation-app/V2/docs/screenshots/liste_vehicules_resaweb.png)
+### Vehicle list (Admin)
+![Vehicles](https://raw.githubusercontent.com/lenaic-hounleba/bus-reservation-app/V2/docs/screenshots/liste_vehicules_resaweb.png)
 
-### Séances réservées (Admin)
-![Réservations](https://raw.githubusercontent.com/lenaic-hounleba/bus-reservation-app/V2/docs/screenshots/liste_reservations.png)
+### Reserved sessions (Admin)
+![Reservations](https://raw.githubusercontent.com/lenaic-hounleba/bus-reservation-app/V2/docs/screenshots/liste_reservations.png)
 
-### Gestion des comptes (Admin)
-![Comptes](https://raw.githubusercontent.com/lenaic-hounleba/bus-reservation-app/V2/docs/screenshots/comptes_admin.png)
+### Account management (Admin)
+![Accounts](https://raw.githubusercontent.com/lenaic-hounleba/bus-reservation-app/V2/docs/screenshots/comptes_admin.png)
 
-### Messages des visiteurs (Admin)
+### Visitor messages (Admin)
 ![Messages](https://raw.githubusercontent.com/lenaic-hounleba/bus-reservation-app/V2/docs/screenshots/messages%20des%20visiteurs.png)
 
-### Formulaire de contact (Visiteur)
+### Contact form (Visitor)
 ![Contact](https://raw.githubusercontent.com/lenaic-hounleba/bus-reservation-app/V2/docs/screenshots/contact_resaweb.png)
 
-### Suivi de demande (Visiteur)
-![Suivi](https://raw.githubusercontent.com/lenaic-hounleba/bus-reservation-app/V2/docs/screenshots/suivi_demande_resaweb.png)
+### Request tracking (Visitor)
+![Tracking](https://raw.githubusercontent.com/lenaic-hounleba/bus-reservation-app/V2/docs/screenshots/suivi_demande_resaweb.png)
 
 ---
 
-## ⚙️ Stack technique
+## ⚙️ Tech Stack
 
-- **Backend** : PHP 8+ · CodeIgniter 4 (framework MVC)
-- **Base de données** : MySQL - avec procédures stockées, triggers et fonctions PSM
+- **Backend** : PHP 8+ · CodeIgniter 4 (MVC framework)
+- **Database** : MySQL - with stored procedures, triggers and PSM functions
 - **Frontend** : HTML5 · CSS3 · Bootstrap
-- **Serveur de déploiement** : Obiwan (serveur universitaire UBO) via SSH
-- **Outils** : phpMyAdmin · Git · GitLab UBO
+- **Deployment server** : Obiwan (UBO university server) via SSH
+- **Tools** : phpMyAdmin · Git · GitLab UBO
 
 ---
 
-## 🧠 Fonctionnalités principales
+## 🧠 Main Features
 
-### Côté membre
-- 🔐 Inscription et connexion sécurisées (mot de passe hashé SHA-256 + sel)
-- 🚗 Consultation des véhicules disponibles avec leur capacité (`rsc_jauge`)
-- 📅 Réservation d'un véhicule pour un créneau donné (date, heure début/fin)
-- 👥 Gestion des rôles dans une réservation : conducteur ou passager
-- 📋 Participation aux réunions de l'association
-- 💬 Messagerie interne avec l'administration
+### Member side
+- 🔐 Secure registration and login (SHA-256 hashed password + salt)
+- 🚗 Browse available vehicles with their capacity (`rsc_jauge`)
+- 📅 Reserve a vehicle for a given time slot (date, start/end time)
+- 👥 Role management within a reservation: driver or passenger
+- 📋 Participation in association meetings
+- 💬 Internal messaging with the administration
 
-### Côté administrateur
-- ➕ Ajout, modification et suppression de véhicules (ressources)
-- 🚫 Gestion des indisponibilités avec motif, commentaire et statut (Terminée / En cours / Future)
-- 📢 Publication d'actualités
-- 👤 Gestion des comptes membres
+### Administrator side
+- ➕ Add, modify and delete vehicles (resources)
+- 🚫 Manage unavailabilities with reason, comment and status (Ended / Ongoing / Upcoming)
+- 📢 Publish news
+- 👤 Manage member accounts
 
-### Règles métier clés
-- ❌ Réservation refusée si le nombre de passagers dépasse la jauge du véhicule
-- 🔗 Une indisponibilité peut concerner plusieurs véhicules (relation N-N via `t_etat_ett`)
-- 📬 Les visiteurs peuvent envoyer des messages sans avoir de compte
+### Key business rules
+- ❌ Reservation rejected if the number of passengers exceeds the vehicle capacity
+- 🔗 An unavailability can affect multiple vehicles (N-N relationship via `t_etat_ett`)
+- 📬 Visitors can send messages without having an account
 
 ---
 
-## 🗄️ Modèle de données
+## 🗄️ Data Model
 
-Le projet repose sur un MLD relationnel complet avec **14 tables** :
+The project is based on a complete relational MLD with **14 tables**:
 
 ```
-t_profil_pfl             → informations personnelles des utilisateurs
-t_compte_cpt             → comptes avec rôle (A = admin, M = membre)
-t_ville_vll              → référentiel des villes
-t_ressource_rsc          → véhicules (nom, photo, description, jauge, URL)
-t_reservation_res        → réservations (date, heure début/fin, bilan)
-t_inscription_isc        → liaison compte-réservation : rôle du membre (conducteur / passager) + date
-t_reunion_reu            → réunions de l'association
-t_participation_ptp      → participants aux réunions
-t_document_dcm           → documents liés aux réunions (procès-verbal, PDF…)
-t_indisponibilite_idp    → périodes d'indisponibilité des véhicules
-t_etat_ett               → liaison N-N entre indisponibilités et ressources
-t_motif_mtf              → motifs d'indisponibilité (panne, révision, accident…)
-t_actualite_act          → actualités publiées par l'admin
-t_message_msg            → messages (membres ou visiteurs sans compte)
+t_profil_pfl             → users' personal information
+t_compte_cpt             → accounts with role (A = admin, M = member)
+t_ville_vll              → cities reference table
+t_ressource_rsc          → vehicles (name, photo, description, capacity, URL)
+t_reservation_res        → reservations (date, start/end time, summary)
+t_inscription_isc        → account-reservation link: member role (driver / passenger) + date
+t_reunion_reu            → association meetings
+t_participation_ptp      → meeting participants
+t_document_dcm           → documents linked to meetings (minutes, PDF…)
+t_indisponibilite_idp    → vehicle unavailability periods
+t_etat_ett               → N-N link between unavailabilities and resources
+t_motif_mtf              → unavailability reasons (breakdown, service, accident…)
+t_actualite_act          → news published by the admin
+t_message_msg            → messages (members or visitors without an account)
 ```
 
 ---
 
-## 🏗️ Architecture MVC (CodeIgniter)
+## 🏗️ MVC Architecture (CodeIgniter)
 
 ```
 ci/
 ├── app/
-│   ├── Controllers/       # logique métier (Accueil, Reservation, Ressource, Compte…)
-│   ├── Models/            # accès à la base de données (Db_model.php)
-│   ├── Views/             # templates HTML/CSS (admin/, membre/, visiteur…)
+│   ├── Controllers/       # business logic (Home, Reservation, Resource, Account…)
+│   ├── Models/            # database access (Db_model.php)
+│   ├── Views/             # HTML/CSS templates (admin/, member/, visitor…)
 │   ├── Config/
-│   │   ├── Database.php   # ⚠️ à configurer localement (non versionnée)
-│   │   └── Routes.php     # définition des routes
-│   └── Filters/           # middlewares (auth, rôles…)
-└── public/                # point d'entrée de l'application
+│   │   ├── Database.php   # ⚠️ to be configured locally (not versioned)
+│   │   └── Routes.php     # route definitions
+│   └── Filters/           # middlewares (auth, roles…)
+└── public/                # application entry point
 ```
 
 ---
 
-## 🔄 Versions du projet
+## 🔄 Project Versions
 
-| Branche | Contenu |
+| Branch | Content |
 |---|---|
-| `V1` | Première version fonctionnelle (structure MVC, authentification, consultation) |
-| `V2` | Version finale enrichie (réservations, indisponibilités, messagerie, triggers SQL) |
-| `main` | Documentation, modélisation UML et schéma de base de données |
+| `V1` | First functional version (MVC structure, authentication, browsing) |
+| `V2` | Final enriched version (reservations, unavailabilities, messaging, SQL triggers) |
+| `main` | Documentation, UML modeling and database schema |
 
 ---
 
-## 🚀 Installation locale
+## 🚀 Local Installation
 
-### Prérequis
-- PHP 7.4+ · MySQL 5.7+ · XAMPP ou MAMP
+### Prerequisites
+- PHP 7.4+ · MySQL 5.7+ · XAMPP or MAMP
 
-### Étapes
+### Steps
 
 ```bash
-# 1. Cloner le dépôt
+# 1. Clone the repository
 git clone https://github.com/lenaic-hounleba/bus-reservation-app.git
 cd bus-reservation-app
 
-# 2. Basculer sur la branche V2
+# 2. Switch to the V2 branch
 git checkout V2
 
-# 3. Importer la base de données
-# → Ce fichier se trouve sur la branche main
-# → git checkout main, récupérer e22507733_db1.sql, puis revenir sur V2
-# → Ouvrir phpMyAdmin, créer une base, importer database/e22507733_db1.sql
+# 3. Import the database
+# → This file is on the main branch
+# → git checkout main, retrieve e22507733_db1.sql, then switch back to V2
+# → Open phpMyAdmin, create a database, import database/e22507733_db1.sql
 
-# 4. Configurer la connexion
-# → Éditer ci/app/Config/Database.php
+# 4. Configure the connection
+# → Edit ci/app/Config/Database.php
 #    hostname, username, password, database
 
-# 5. Lancer sur serveur local
-# → Placer le dossier ci/ dans htdocs/ (XAMPP) ou Sites/ (MAMP)
-# → Accéder via http://localhost/ci/
+# 5. Run on local server
+# → Place the ci/ folder in htdocs/ (XAMPP) or Sites/ (MAMP)
+# → Access via http://localhost/ci/
 ```
 
 ---
 
-## 📂 Fichiers importants (branche `main`)
+## 📂 Important Files (`main` branch)
 
-| Fichier | Description |
+| File | Description |
 |---|---|
-| `BD_MLD_ResaWeb.pdf` | Modèle Logique de Données (MLD) du projet |
-| `BD_MLD_ResaWeb.mwb` | Fichier source MySQL Workbench |
-| `Diagramme_UML_BD_ResaWeb.pdf` | Diagramme UML de la base de données |
-| `e22507733_db1.sql` | Export complet de la base de données |
-| `requetes_sql_dml_sprint1.sql` | Jeu de données Sprint 1 |
-| `requetes_sql_dml_sprint2.sql` | Jeu de données Sprint 2 |
+| `BD_MLD_ResaWeb.pdf` | Project Logical Data Model (LDM) |
+| `BD_MLD_ResaWeb.mwb` | MySQL Workbench source file |
+| `Diagramme_UML_BD_ResaWeb.pdf` | Database UML diagram |
+| `e22507733_db1.sql` | Complete database export |
+| `requetes_sql_dml_sprint1.sql` | Sprint 1 dataset |
+| `requetes_sql_dml_sprint2.sql` | Sprint 2 dataset |
 
 ---
 
-## 🔐 Sécurité
+## 🔐 Security
 
-- Hash des mots de passe avec **SHA-256 + sel applicatif** (approche pédagogique - en production, bcrypt ou Argon2 seraient préférés)
-- Gestion des rôles et **contrôle d'accès (RBAC)** par sessions CodeIgniter
-- Pseudo généré automatiquement au format `prenom.nom`
-
----
-
-## ⚠️ Limites et améliorations possibles
-
-> Ce projet a été développé dans un cadre académique avec des délais contraints, en parallèle d'autres cours et projets. Certains aspects comme le design n'ont pas pu être finalisés faute de temps.
-
-- Interface utilisateur perfectible - le design frontend n'a pas pu être entièrement optimisé faute de temps
-- Authentification SHA-256 fonctionnelle mais améliorable (bcrypt / Argon2 en production)
-- Absence d'API REST pour une séparation claire frontend / backend
-- Déploiement non containerisé (Docker envisageable)
+- Password hashing with **SHA-256 + application salt** (academic approach - in production, bcrypt or Argon2 would be preferred)
+- Role management and **access control (RBAC)** via CodeIgniter sessions
+- Username automatically generated in `firstname.lastname` format
 
 ---
 
-## 🔭 Perspectives d'évolution
+## ⚠️ Limits & Possible Improvements
 
-- Refonte complète du design et de l'expérience utilisateur (UX/UI personnalisée)
-- Mise en place d'une API REST
-- Migration vers Laravel ou Symfony
-- Intégration d'un système de notifications (email, push)
-- Refonte de l'interface utilisateur (React / Vue.js)
+> This project was developed in an academic context with tight deadlines, alongside other courses and projects. Some aspects such as the design could not be finalized due to time constraints.
 
----
-
-## 📚 Compétences mobilisées
-
-- Architecture **MVC** avec CodeIgniter
-- Conception de base de données relationnelle (MLD → SQL)
-- **SQL avancé** : procédures stockées, triggers, fonctions PSM
-- Gestion des rôles et **contrôle d'accès (RBAC)**
-- Développement **Full Stack** : PHP · MySQL · HTML/CSS · Bootstrap
-- Déploiement sur serveur Linux via **SSH / SCP**
-- Gestion de version avec **Git** (branches, merge, remote)
+- Improvable user interface - the frontend design could not be fully optimized due to time constraints
+- SHA-256 authentication functional but improvable (bcrypt / Argon2 in production)
+- No REST API for a clear frontend / backend separation
+- Non-containerized deployment (Docker feasible)
 
 ---
 
-## 👨‍💻 Auteur
+## 🔭 Future Improvements
+
+- Complete redesign of the design and user experience (custom UX/UI)
+- Implementation of a REST API
+- Migration to Laravel or Symfony
+- Integration of a notification system (email, push)
+- Frontend redesign (React / Vue.js)
+
+---
+
+## 📚 Skills Demonstrated
+
+- **MVC** architecture with CodeIgniter
+- Relational database design (LDM → SQL)
+- **Advanced SQL**: stored procedures, triggers, PSM functions
+- Role management and **access control (RBAC)**
+- **Full Stack** development: PHP · MySQL · HTML/CSS · Bootstrap
+- Deployment on Linux server via **SSH / SCP**
+- Version control with **Git** (branches, merge, remote)
+
+---
+
+## 👨‍💻 Author
 
 **Lenaïc Love HOUNLEBA**  
-CEO & Développeur Full Stack - [ComeUp](https://comeup.com/fr/@lenaic-1)
+CEO & Full Stack Developer - [ComeUp](https://comeup.com/fr/@lenaic-1)
 
 🔗 GitHub : [github.com/lenaic-hounleba](https://github.com/lenaic-hounleba)  
 📧 lovehounleba@gmail.com
 
 ---
 
-> *Projet réalisé dans le cadre du module ISI - Licence 3 Informatique, Université de Bretagne Occidentale, 2025-2026.*
+> *Project carried out as part of the ISI module - L3 Computer Science, Université de Bretagne Occidentale, 2025-2026.*
